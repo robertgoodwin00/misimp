@@ -1,0 +1,129 @@
+
+<style>
+    
+    #textbox {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      height:120px;
+      margin-left:5px;
+      margin-right:0px;
+      padding-left:0px;
+      padding-right:0px;
+      overflow-y:hidden;
+
+
+      border: 2px;
+      border-style:ridge;
+      border-color: green;
+      width:100%;
+
+
+    }
+
+    #scrollview {
+      position:absolute;
+      top:0px;
+      left:0px;
+      max-height: 23vh; 
+      overflow-y:auto;
+      /*position: absolute;*/
+      bottom: 21px;
+      z-index: 3;
+      padding-left: 10px;
+      padding-right: 10px;
+      /* max-width: 86vw; */
+      
+      min-width: 380px;
+      /*max-width: 640px;*/
+      position: relative;
+
+    }
+
+    #scrollviewcontent {
+      margin-bottom: 32px;
+    }
+
+    /* Chat containers */
+    .container {
+        border: 0px solid #dedede;
+        background-color: #f1f1f1;
+        border-radius: 0px;
+        padding: 10px 12px;
+        margin: 10px 0;
+        border-color: black;
+        background-color: #aaa;
+        color: black;
+        flex-wrap: wrap;
+        height: auto;
+        max-width: max-content;
+        width: auto;
+    }
+
+    /* Clear floats */
+    .container::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+
+    .message-right {
+        float: right;
+        text-align: justify;
+    }
+
+    #textback {
+      position:absolute;
+      top:0px;
+      left:0px;
+      width:380px;
+      height:100%;
+      background-color: white;
+
+      border: 2px;
+      border-style: solid;
+      border-color: yellow;
+      opacity: .2;
+
+      
+    }
+
+    .messageview {
+      color: black;
+    }
+
+
+</style>
+
+
+<div id="textbox">
+
+    <div id="scrollview" >
+
+        <div id="scrollviewcontent">
+            <div *ngFor="let message of messages" class="messageview">
+          
+              <div class="container">
+                <div class='message-right'>
+                  <!--<a (click)="messageClick(message.msgid)" [innerHTML]="processMessage(message.msgtext)" ></a>-->
+                  {{processMessage(message)}}
+                </div>
+                
+              </div>
+            
+            </div>
+  
+        </div>
+
+        
+
+        
+        
+      
+        <!--<div id="bottom_of_scroll"></div>-->
+    </div> <!-- end scrollview -->
+
+    <div id="textback"></div>
+
+</div>

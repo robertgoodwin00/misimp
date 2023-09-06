@@ -1,0 +1,121 @@
+
+<style>
+    #map {
+        max-width:520px; 
+        /*background-color:yellow; */
+        border:1px; 
+        border-style:solid; 
+        border-color:orange;
+        padding-top:4px;
+
+
+    }
+
+    .cell-row {
+        padding: 0px;
+        margin: -4px 0px -4px 0px;
+        
+        border: 0px;
+        border-color: black;
+        border-style: solid;
+
+        display: inline-block;
+        /*background-color: red;*/
+
+        width: 100px;
+        height: 100px;
+    }
+
+    .cell-column {
+        padding: 0px;
+        margin: 0px;
+        
+        border: 0px;
+        border-color: black;
+        border-style: solid;
+
+        display: inline-block;
+        /*background-color: green;*/
+
+        width: 100px;
+        height: 100px;
+        
+    }
+
+    .connector {
+        stroke: #ddeeff;
+        stroke-width: 3px;
+        /*stroke-linecap: round;*/
+    }
+
+    /*
+    .foo {
+        transform-origin: center;
+        transform: scale(1.1);
+    }
+    
+    
+    .is-active .foo {
+        animation: pulse 5s;
+    }
+
+    @keyframes pulse {
+        20% {
+            transform: scale(0.9);
+        }
+   
+    }*/
+
+    /*
+    .animated {
+        -webkit-animation-duration: 1s;
+        animation-duration: 1s;
+    }
+
+    @keyframes pulse {
+        from {
+            -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+        }  50% {
+            -webkit-transform: scale3d(1.05, 1.05, 1.05);
+            transform: scale3d(1.05, 1.05, 1.05);
+        }  to {
+            -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+        }
+    }
+    */
+    
+
+</style>
+
+
+<div id="map" style="display:block;">
+    <div class="cell-column" *ngFor="let item of [].constructor(nodes_per_row); let x = index" >
+        <div class="cell-row" *ngFor="let item of [].constructor(nodes_per_row); let y = index " >
+            <div class="foo" >
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                    <!--<rect  x="0" y="0" width="100" height="100" fill="#bbb"/>-->
+                
+                    
+                    <line *ngIf="isNode(x,y) && canGo(x,y,0)" class="connector" x1="50" y1="50" x2="0" y2="0"  />
+                    <line *ngIf="isNode(x,y) && canGo(x,y,1)" class="connector" x1="50" y1="50" x2="100" y2="100"  />
+                    <line *ngIf="isNode(x,y) && canGo(x,y,2)" class="connector" x1="50" y1="50" x2="100" y2="0"  />
+                    <line *ngIf="isNode(x,y) && canGo(x,y,3)" class="connector" x1="50" y1="50" x2="0" y2="100"  />
+
+                    <circle *ngIf="isNode(x,y)" cx="50" cy="50" r="38" fill="#00ffff" (click)="circleClick(x,y)">
+                        <animate id="{{'circle-' + x + '-' + y}}" 
+                            animateTransform attributeName="r" 
+                            begin="indefinite" dur=".2s" from="38" to="44"  />
+                        
+                    </circle>
+
+                    <circle *ngIf="playerHere(x,y)" cx="50" cy="50" r="12" fill="#f11" ></circle>
+                    
+                </svg>
+            </div>
+            
+        </div>
+    </div>
+</div>
+

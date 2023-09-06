@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SceneComponent } from './scene.component';
+import { ImageMapComponent } from './imagemap.component';
 
-describe('SceneComponent', () => {
-  let component: SceneComponent;
-  let fixture: ComponentFixture<SceneComponent>;
+describe('ImagemapComponent', () => {
+  let component: ImageMapComponent;
+  let fixture: ComponentFixture<ImageMapComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SceneComponent]
+      declarations: [ImageMapComponent]
     });
-    fixture = TestBed.createComponent(SceneComponent);
+    fixture = TestBed.createComponent(ImageMapComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

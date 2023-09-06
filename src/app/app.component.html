@@ -475,11 +475,21 @@
 
 -->
 
-<app-scene></app-scene>
+<app-game></app-game>
+
+
 
 <footer>
   footer
 </footer>
 
+
+<!--
+<app-game *ngIf="showGame"></app-game>
+<app-character-creation
+  *ngIf="!showGame"
+  (onCharacterCreated)="startGame()"
+></app-character-creation>
+-->
 
 <router-outlet></router-outlet>

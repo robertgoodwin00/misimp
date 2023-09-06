@@ -1,0 +1,150 @@
+
+
+<!--
+<img src="./assets/images/755.jpg" height="120" width="80" />
+-->
+
+<style>
+  .image-container {
+    position: relative;
+    width: 640px;
+    height: 640px;
+    margin-top: 10px;
+  }
+
+  .back {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+
+  }
+
+  .tachie {
+    position: absolute;
+    bottom: 0px;
+    left: 160px;
+  }
+</style>
+
+
+
+
+<!--
+<div>
+  <img src="./assets/girl-svgrepo-com.svg" width="50">
+
+  <svg width="100" height="100" viewBox="0 0 100 100">
+    <rect x="0" y="0" height="50" width="50" fill="#bbb"/>
+
+    <circle cx="50" cy="50" r="20" fill="#00ffff"></circle>
+  </svg>
+
+  <svg width="200" height="200" viewBox="-100 -100 200 200">
+  <circle cx="0" cy="20" r="70" fill="#D1495B" />
+
+  <circle
+    cx="0"
+    cy="-75"
+    r="12"
+    fill="none"
+    stroke="#F79257"
+    stroke-width="2"
+  />
+
+  <rect x="-17.5" y="-65" width="35" height="20" fill="#F79257" />
+</svg>
+</div>
+-->
+
+<!--
+<div class="image-container">
+  <div class="back">
+    <img src="./assets/images/back3.jpg" height="640" width="640" />
+  </div>
+  <div class="tachie">
+    <img src="./assets/images/girl2.png" height="640" width="320" />
+  </div>
+</div>
+-->
+
+<!--
+<div>
+  <ng-container *ngIf="true">
+    <image-map [src]="image" [coordinates]="coordinates" (onClick)="getClick($event)" ></image-map>
+  </ng-container>
+</div>
+-->
+
+<!--
+<div>
+  <ng-container *ngIf="true">
+    <image-map src="./assets/images/back3.jpg" [coordinates]="coordinates" (onClick)="getClick($event)" ></image-map>
+  </ng-container>
+</div>
+-->
+
+<span>SEED={{seed}}</span>
+
+
+<div style="position:relative; height:520px; width:600px;">
+    <!--<h1>{{ currentScenario.title }}</h1>-->
+    <h1>{{ currentRoom.title }}</h1>
+
+    <div style="position:absolute;" >
+    
+      <!--
+      <ng-container *ngIf="true">
+        <image-map src={{currentRoom.imgpath()}} width="350" height="512" [coordinates]="coordinates"  (onClick)="getClick($event)" ></image-map>
+      </ng-container>
+      -->
+      
+      <div class="image-container">
+        <div class="back">
+          <img src={{currentRoom.imgpath()}} height="640" width="640" />
+        </div>
+        <div class="tachie" *ngIf="displayTachie">
+          <img src="./assets/images/girl2.png" height="640" width="320" />
+        </div>
+      </div>
+
+      <p>{{ currentScenario.description }}</p>
+      <ul>
+        <li
+          *ngFor="let choice of currentScenario.choices"
+          (click)="makeChoice(choice)"
+        >
+          {{ choice.text }}
+        </li>
+      </ul>
+      <button
+        pButton
+        *ngIf="currentScenario.choices.length === 0"
+        (click)="restartGame()"
+      >
+      Restart Game
+      </button>
+
+    </div>
+    
+
+    <div style="position:absolute; left:10px;"> 
+      <a (click)="toggleDisplayMap()" style="color:royalblue; cursor: pointer; text-decoration: none;">{{displayMapText}}</a>
+      <div [@GeneralFade]="displayMap ? 'in' : 'out'" style="display:block;">
+      <!--<div *ngIf="displayMap" id="beneathscrollview">-->
+          <app-map></app-map>
+      </div>
+      
+    </div>
+
+
+    <div style="position:absolute; top:572px; width:100%;" >
+      <app-textbox></app-textbox>
+    </div>
+
+</div>
+
+
+<div style="position:static;">
+</div>
+
+
