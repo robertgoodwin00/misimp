@@ -115,4 +115,18 @@ export class MapComponent {
     return s;
   }
 
+  hasEvent(x: number, y: number) {
+    let ax = x + this.dx;
+    let ay = y + this.dy;
+    if (this.rooms[ax][ay] && this.rooms[ax][ay].event_available) 
+      return true;
+    return false;
+  }
+
+  getEventPath(x: number, y: number) {
+    let ax = x + this.dx;
+    let ay = y + this.dy;
+    return this.rooms[ax][ay].eventpath(true, true);
+  }
+
 }

@@ -1,13 +1,14 @@
 
 <style>
     #map {
-        max-width:520px; 
+        width:560px; 
+        max-height:556px;
         /*background-color:yellow; */
         border:1px; 
         border-style:solid; 
         border-color:orange;
         padding-top:4px;
-
+        overflow:hidden;
 
     }
 
@@ -22,8 +23,8 @@
         display: inline-block;
         /*background-color: red;*/
 
-        width: 100px;
-        height: 100px;
+        width: 80px;
+        height: 80px;
     }
 
     .cell-column {
@@ -37,8 +38,8 @@
         display: inline-block;
         /*background-color: green;*/
 
-        width: 100px;
-        height: 100px;
+        width: 80px;
+        height: 80px;
         
     }
 
@@ -94,24 +95,43 @@
     <div class="cell-column" *ngFor="let item of [].constructor(nodes_per_row); let x = index" >
         <div class="cell-row" *ngFor="let item of [].constructor(nodes_per_row); let y = index " >
             <div class="foo" >
-                <svg width="100" height="100" viewBox="0 0 100 100">
+                <svg width="80" height="80" viewBox="0 0 80 80">
                     <!--<rect  x="0" y="0" width="100" height="100" fill="#bbb"/>-->
                 
                     
-                    <line *ngIf="isNode(x,y) && canGo(x,y,0)" class="connector" x1="50" y1="50" x2="0" y2="0"  />
-                    <line *ngIf="isNode(x,y) && canGo(x,y,1)" class="connector" x1="50" y1="50" x2="100" y2="100"  />
-                    <line *ngIf="isNode(x,y) && canGo(x,y,2)" class="connector" x1="50" y1="50" x2="100" y2="0"  />
-                    <line *ngIf="isNode(x,y) && canGo(x,y,3)" class="connector" x1="50" y1="50" x2="0" y2="100"  />
+                    <line *ngIf="isNode(x,y) && canGo(x,y,0)" class="connector" x1="40" y1="40" x2="0" y2="0"  />
+                    <line *ngIf="isNode(x,y) && canGo(x,y,1)" class="connector" x1="40" y1="40" x2="80" y2="80"  />
+                    <line *ngIf="isNode(x,y) && canGo(x,y,2)" class="connector" x1="40" y1="40" x2="80" y2="0"  />
+                    <line *ngIf="isNode(x,y) && canGo(x,y,3)" class="connector" x1="40" y1="40" x2="0" y2="80"  />
 
-                    <circle *ngIf="isNode(x,y)" cx="50" cy="50" r="38" fill="#00ffff" (click)="circleClick(x,y)">
+                    <circle *ngIf="isNode(x,y)" cx="40" cy="40" r="36" fill="#00ffff" (click)="circleClick(x,y)">
                         <animate id="{{'circle-' + x + '-' + y}}" 
                             animateTransform attributeName="r" 
-                            begin="indefinite" dur=".2s" from="38" to="44"  />
+                            begin="indefinite" dur=".2s" from="36" to="44"  />
                         
                     </circle>
 
-                    <circle *ngIf="playerHere(x,y)" cx="50" cy="50" r="12" fill="#f11" ></circle>
+                    <circle *ngIf="playerHere(x,y)" cx="40" cy="40" r="12" fill="#f11" ></circle>
                     
+                    <defs>
+                        <clipPath id="circleView">
+                            <circle cx="40" cy="40" r="36" fill="#FFFFFF" />
+                        </clipPath>
+                    </defs>
+                    <!--<image *ngIf="isNode(x,y) && hasEvent(x,y)" (click)="circleClick(x,y)" 
+                        
+                        x="-50"
+                        y="-50"
+                        width="200" 
+                        height="200" 
+
+                        clip-path="url(#circleView)"
+                        [attr.xlink:href]="getEventPath(x,y)"
+                    />-->
+                    <image *ngIf="isNode(x,y) && hasEvent(x,y)" (click)="circleClick(x,y)"
+                        clip-path="url(#circleView)"
+                        [attr.xlink:href]="getEventPath(x,y)"
+                    />
                 </svg>
             </div>
             

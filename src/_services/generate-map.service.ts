@@ -13,6 +13,11 @@ export class GenerateMapService {
   quota: number = 0;
   rooms: Room[][] = [];
 
+  // mark which events have been assigned to rooms so that we don't repeat
+  used_1s: Boolean[] = [];
+  used_2s: Boolean[] = [];
+  used_3s: Boolean[] = [];
+
   constructor(
     private mapService: MapService
   ) { }
@@ -41,6 +46,10 @@ export class GenerateMapService {
     let columns = Constants.NUM_COLUMNS;
     let grid = new Array(rows);
     let rooms = new Array(rows);
+
+    this.used_1s = new Array(Constants.NUM_1s).fill(false);
+    this.used_2s = new Array(Constants.NUM_2s).fill(false);
+    let used_3s = new Array(Constants.NUM_3s).fill(false);
 
     // initialize first
     for (let i=0; i < rows; i++) {
@@ -71,8 +80,10 @@ export class GenerateMapService {
 
     let s: { [key: string]: number } = {x: sx, y: sy}
     let array_to_pave = [s];
+    let iterations = 0;
     
     while (array_to_pave.length > 0) {
+      iterations += 1;
 
       let square = array_to_pave.shift()!;
       let px = square['x'];
@@ -83,10 +94,25 @@ export class GenerateMapService {
       
 
       for (let dir=0; dir<4; dir++) {
-        let f = 2;
-        let paveit = Math.floor(this.mapService.random()*f)==0 && this.canPave(px,py,dir);
+        
+        if (!this.canPave(px,py,dir))
+          continue;
+
+        let paveit = false;
+        if (px==Constants.SX && py==Constants.SY) {
+          // 100% on first iteration
+          paveit = true;
+        } else if (iterations<2) {
+          // 50% chance on second iteration
+          paveit = (Math.floor(this.mapService.random()*2))==0;
+        } else {
+          // on any but the first iteration we have a 33% chance to pave
+          paveit = (Math.floor(this.mapService.random()*3))==0;
+        }
+        
+
         let adjacent = this.mapService.adjacentRoom(px,py,dir) || null;
-        if (paveit || (px==Constants.SX && py==Constants.SY) || 
+        if (paveit || 
           (adjacent && adjacent.exit[this.mapService.oppositeDir(dir)])) {
 
           let nx = 0;
@@ -98,7 +124,8 @@ export class GenerateMapService {
             case 3: nx=px-1; ny=py+1; 
           }
 
-          console.log('pave in dir ' + dir);
+          if (iterations<10)
+            console.log('pave in dir ' + dir);
           this.mapService.rooms[px][py].setExit(dir);
           //console.log(`exits at ${px},${py} are ${this.mapService.rooms[px][py].exit.toString()}`);
 
@@ -107,7 +134,8 @@ export class GenerateMapService {
           if (!grid[nx][ny]) {
             grid[nx][ny] = true;
             // if there's no room there we will be making one
-            console.log(`making room at ${nx},${ny}`);
+            if (iterations<10)
+              console.log(`making room at ${nx},${ny}`);
             this.mapService.rooms[nx][ny] = new Room(nx,ny);
 
             let np: {[key:string]: number} = {x:nx, y:ny};
@@ -167,6 +195,50 @@ export class GenerateMapService {
           let img_id = Math.floor(this.mapService.random()*8);
           //console.log('room=' + img_id.toString());
           this.mapService.rooms[i][j].img_id = img_id.toString();
+          
+          // set category and event image
+          let cat = 1;
+          let event_id = 0;
+          let found = false;
+          // how many tries it is taking to find an unused event
+          let tries = (Math.floor(this.mapService.random()*2)==0) ? 0 : 100; 
+
+          while (!found && tries<100) {
+            
+            if (Math.floor(this.mapService.random()*2)==0) {
+              cat = 1;
+              event_id = Math.floor(this.mapService.random()*Constants.NUM_1s);
+              if (this.used_1s[event_id] == false) {
+                this.used_1s[event_id] = true;
+                found = true;
+              }
+            } else if (Math.floor(this.mapService.random()*4)>0) {
+              cat = 2;
+              event_id = Math.floor(this.mapService.random()*Constants.NUM_2s);
+              if (this.used_2s[event_id] == false) {
+                this.used_2s[event_id] = true;
+                found = true;
+              }
+            } else {
+              cat = 3;
+              event_id = Math.floor(this.mapService.random()*Constants.NUM_3s);
+              if (this.used_3s[event_id] == false) {
+                this.used_3s[event_id] = true;
+                found = true;
+              }
+            }
+
+            tries += 1;
+
+          } // end while
+          
+          if (found) {
+            this.mapService.rooms[i][j].setEvent(event_id, cat);
+            //console.log('set cat=' + cat + ' and event=' + event_id);
+          } else {
+            
+            //console.log('not event set for room');
+          }
           
        }
         

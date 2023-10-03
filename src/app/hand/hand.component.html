@@ -1,0 +1,16 @@
+
+<style>
+    .card-div {
+        cursor: pointer;
+    }
+
+    
+
+</style>
+
+<div *ngFor="let card of hand; let i = index" >
+    <div class="card-div" >
+        <app-card [value] = "card"></app-card>
+    </div>
+    
+</div>

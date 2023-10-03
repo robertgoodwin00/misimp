@@ -37,26 +37,29 @@ export class MapService {
   // dir of -1 means see if the square coordiantes can exist
   // dir of 0-3 means an adjacent square coordinates
   canBe(x: number, y: number, dir: number = -1) : Boolean {
-
+    let dis = Constants.DISPLACEMENT;
     switch(dir) {
       case 0: 
-        return  (x-1>=2 && y-1>=2) ? true : false;
+        return  (x-1>=dis && y-1>=dis) ? true : false;
       case 1: 
-        return (x+1<Constants.NUM_ROWS-2 && y+1<Constants.NUM_COLUMNS-2) ? true : false;
+        return (x+1<Constants.NUM_ROWS-dis && y+1<Constants.NUM_COLUMNS-dis) ? true : false;
       case 2:
-        return (y-1>=2 && x+1<Constants.NUM_ROWS-2) ? true : false;
+        return (y-1>=dis && x+1<Constants.NUM_ROWS-dis) ? true : false;
       case 3:
-        return (y+1<Constants.NUM_COLUMNS-2 && x-1>=2) ? true : false;
+        return (y+1<Constants.NUM_COLUMNS-dis && x-1>=dis) ? true : false;
       case -1:
-        return (x>=2 && y>=2 && x<Constants.NUM_ROWS-2 && y<Constants.NUM_COLUMNS-2) ? true : false;
+        return (x>=dis && y>=dis && x<Constants.NUM_ROWS-dis && y<Constants.NUM_COLUMNS-dis) ? true : false;
     }
     return false;
   }
 
   canGo(x: number, y: number, dir: number = -1) : Boolean {
     // first see if that square exists
-    if (!this.canBe(x,y,dir))
+    if (!this.canBe(x,y,dir)) {
+      //console.log('cannot be there');
       return false;
+    }
+      
 
     // see if there is a node on that square and an exit
     switch(dir) {

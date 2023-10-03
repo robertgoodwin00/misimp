@@ -1,0 +1,75 @@
+
+<style>
+    .card {
+        border: solid 2px #111;
+        border-radius: 9px;
+        width: 97px;
+        height: 152px;
+        float:left;
+        background-color: #587;
+        padding: 3px 3px 3px 3px;
+        margin: 3px;
+        
+    }
+
+    .card:hover {
+        border: 2px solid yellow;
+    }
+
+    .card .card-interior {
+        border: solid 1px #555;
+        border-radius: 9px;
+        width: 83px;
+        height: 138px;
+        float:left;
+        background-color: white;
+        padding: 3px 3px 3px 3px;
+        margin: 3px;
+        position: relative;
+    }
+
+    #card-title {
+        position: absolute;
+        top: 1.5em;
+        font-weight:bold;
+        font-size: 14px;
+        margin: 6px 6px;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .card-icon {
+        position: absolute;
+        top: .5em;
+
+    }
+
+    #card-cost {
+        position: absolute;
+        font-size: 12px;
+        top: .5em;
+        right: .5em;
+    }
+
+
+</style>
+
+<div class="card" (click)="clickCard()" [@clickCardTrigger]="clickedCard ? 'end' : 'start'" (@clickCardTrigger.done)="afterClickCard()" >
+    <div class="card-interior">
+    
+        <div class="card-icon" >
+            <img src="{{cardLink()}}" width="20px;">
+        </div>
+
+        <div id="card-title">
+            any card goes right here
+        </div>
+
+        <div id="card-cost">
+            {{value}}
+        </div>
+        
+
+    </div>
+</div>

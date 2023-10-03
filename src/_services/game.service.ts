@@ -43,11 +43,19 @@ export class GameService {
 
 
   // delta is offset from leftmost rightmost corner (0,0)
-  public delta_x: number = 2; 
-  public delta_y: number = 2; 
+  public delta_x: number = Constants.SX - Constants.DISPLACEMENT; 
+  public delta_y: number = Constants.SX - Constants.DISPLACEMENT; 
   // player is where the player is
-  public player_x: number = this.delta_x + 2;
-  public player_y: number = this.delta_y + 2;
+  public player_x: number = Constants.SX;
+  public player_y: number = Constants.SY;
+
+  public player_walk: number = Constants.STARTING_WALK;
+  public player_meet: number = Constants.STARTING_MEET;
+  public player_money: number = 1000;
+  public player_stats: number[] = [3,3,3,3];  // looks, humor, mystery, romance
+  public player_score: number = 0;
+  public player_level: number = 0;
+  
 
 
   constructor(
@@ -56,7 +64,10 @@ export class GameService {
     private mapService: MapService,
   ) {
       this.generateMapService.generate();  // generate the entire map and store in mapService.grid
+
+      this.mapService.rooms[this.player_x][this.player_y].turnOffEvent();
   }
+
 
   
 
@@ -79,8 +90,22 @@ export class GameService {
     });*/
   }
 
-  canGo(x: number = this.player_x, y: number = this.player_y, dir: number = -1) {
-    return this.mapService.canGo(x,y,dir);
+  canGo(x: number = this.player_x, y: number = this.player_y, dir: number = -1) : Boolean {
+    if (this.mapService.canGo(x,y,dir)) {
+      if (this.player_walk<=0) {
+        console.log('out of player walk');
+        return false;
+      }
+
+      let room = this.mapService.adjacentRoom(x,y,dir);
+      if (room?.event_available && this.player_meet<=0) {
+        console.log('out of player meet');
+        return false;
+      }
+
+      return true;
+    }
+    return false;
   }
 
   goPlayer(dir: number) {
@@ -90,6 +115,13 @@ export class GameService {
       case 2: this.player_x += 1; this.player_y -= 1; break;
       case 3: this.player_x -= 1; this.player_y += 1;
     }
+
+    this.player_walk -= 1;
+
+    let room = this.getRoom(this.player_x,this.player_y);
+    if (room.event_available)
+      this.player_meet -= 3;
+    
   }
 
 
@@ -117,6 +149,18 @@ export class GameService {
       }*/
     //}
     return true;
+  }
+
+  turnOffEvent() {
+    this.mapService.rooms[this.player_x][this.player_y].turnOffEvent();
+  }
+
+  persuade() {
+    if (true) {
+      let current_room = this.mapService.rooms[this.player_x][this.player_y];
+      let score_change = current_room.cat;
+      this.player_score += score_change;
+    }
   }
 }
 

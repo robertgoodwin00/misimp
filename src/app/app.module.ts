@@ -9,6 +9,9 @@ import { ImageMapComponent } from './imagemap/imagemap.component';
 import { TextboxComponent } from './textbox/textbox.component';
 import { MapComponent } from './map/map.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CardComponent } from './card/card.component';
+import { DeckComponent } from './deck/deck.component';
+import { HandComponent } from './hand/hand.component';
 
 
 @NgModule({
@@ -17,7 +20,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     GameComponent,
     ImageMapComponent,
     TextboxComponent,
-    MapComponent
+    MapComponent,
+    CardComponent,
+    DeckComponent,
+    HandComponent
   ],
   imports: [
     BrowserModule,

@@ -7,6 +7,8 @@ export class EventEmitterService {
 
   movePlayer = new EventEmitter<number>();    
   invokeRefreshMap = new EventEmitter();
+  invokeAddCardToHand = new EventEmitter();
+  invokeRemoveCardFromHand = new EventEmitter();
     
   constructor() { }    
     
@@ -16,6 +18,14 @@ export class EventEmitterService {
     
   RefreshMap() {
     this.invokeRefreshMap.emit();
+  }
+
+  AddCardToHand(cardid: number) {
+    this.invokeAddCardToHand.emit(cardid);
+  }
+
+  RemoveCardFromHand(cardid: number) {
+    this.invokeRemoveCardFromHand.emit(cardid);
   }
   
 

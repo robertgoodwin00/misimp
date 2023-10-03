@@ -7,6 +7,7 @@ import { EventEmitterService } from 'src/_services/event-emitter.service';
 import { Subscription } from 'rxjs';
 import { animate, state, style, transition, trigger, keyframes } from '@angular/animations';
 //import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MapService } from 'src/_services/map.service';
 
 
 @Component({
@@ -47,10 +48,23 @@ export class GameComponent implements OnInit {
   displayMapText = "HIDE";
 
   displayTachie: Boolean = false;
+  doingEvent: Boolean = false;
 
   seed: number = -1;
   
-  ee: Subscription  = new Subscription; 
+  mp: Subscription  = new Subscription; 
+  acth: Subscription  = new Subscription; 
+  rcfh: Subscription  = new Subscription; 
+
+  player_walk: number = 0;
+  player_meet: number = 0;
+  player_score: number = 0;
+
+  showPersuadeBox: Boolean = false;
+  showPersuadeButton: Boolean = false;
+
+  hand: number[] = [];
+  deck: number[] = [0,1,2,3,4,5,6,7,8,1];
 
 
   //@ViewChild('textbox', { static: true }) textbox!: TextboxComponent;
@@ -62,6 +76,7 @@ export class GameComponent implements OnInit {
   constructor(
     private gameService: GameService,
     private eventEmitterService: EventEmitterService ,
+    private mapService: MapService,
   ) {
     this.seed = Constants.seed;
   }
@@ -69,10 +84,14 @@ export class GameComponent implements OnInit {
 
 
   ngOnInit(): void {
+    console.log('begin init game');
     this.loadScenario(0);
     this.loadRoom();
+    this.shuffle();
+    this.draw(5);
+    this.doingEvent = false;
 
-    this.ee = this.eventEmitterService.movePlayer.subscribe((dir) => { 
+    this.mp = this.eventEmitterService.movePlayer.subscribe((dir) => { 
         console.log('try go ' + dir);
         switch(dir) {
           case 0: this.tryShiftLeft(); break;
@@ -83,7 +102,62 @@ export class GameComponent implements OnInit {
   
       }); 
 
+    this.rcfh = this.eventEmitterService.invokeRemoveCardFromHand.subscribe((cardvalue) => { 
+        console.log('refresh hand removing value ' + cardvalue);
+        //this.hand = this.hand.filter(item => item !== value)
+        let index = this.hand.indexOf(cardvalue);
+        console.log('splicing at index ' + index);
+        this.hand.splice(index, 1);
+        console.log('hand is now ' + this.hand.toString());
+  
+    });
 
+    this.acth = this.eventEmitterService.invokeAddCardToHand.subscribe((cardvalue) => { 
+      console.log('refresh hand with adding value ' + cardvalue);
+      //this.hand = this.hand.filter(item => item !== value)
+      this.hand.push(cardvalue);
+
+    });
+
+      this.player_walk = this.gameService.player_walk;
+      this.player_meet = this.gameService.player_meet;
+      this.player_score = this.gameService.player_score;
+
+  }
+
+  // shuffle the deck
+  shuffle()
+  {
+    console.log('shuffle the deck');
+    // for 1000 iterations
+    // switch the values of two random cards
+    for (let i = 0; i < 1000; i++)
+    {
+      let location1 = Math.floor(this.mapService.random() * this.deck.length);
+      let location2 = Math.floor(this.mapService.random() * this.deck.length);
+      let tmp = this.deck[location1];
+
+      this.deck[location1] = this.deck[location2];
+      this.deck[location2] = tmp;
+    }
+    console.log('deck set as ' + this.deck.toString());
+  }
+
+  // draw card(s) from the deck
+  draw(numberToDraw: number = 1) {
+    console.log('draw up to ' + numberToDraw + ' cards');
+    for (let i=0; i<numberToDraw; i++) {
+      if (this.deck.length==0) {
+        console.log('no more cards to draw');
+        break;
+      }
+      let cardvalue = this.deck.shift() as number;
+      console.log('draw ' + cardvalue);
+      if (cardvalue || cardvalue==0)
+        this.hand.push(cardvalue);
+      console.log('adding ' + cardvalue + ' to hand');
+      
+    }
   }
 
   loadScenario(id: number): void {
@@ -94,6 +168,14 @@ export class GameComponent implements OnInit {
 
   loadRoom(x: number = Constants.SX, y: number = Constants.SY) {
     this.currentRoom = this.gameService.getRoom(x,y);
+
+    if (this.currentRoom.event_available) {
+      this.doingEvent = true;
+      this.gameService.turnOffEvent();
+    } else {
+      this.doingEvent = false;
+    }
+      
   }
 
   makeChoice(choice: any): void {
@@ -150,6 +232,12 @@ export class GameComponent implements OnInit {
         console.log('keyed e');
       } else if (key=='w') {
         console.log('keyed w');
+      }
+
+      else if (key=='p') {
+        console.log('keyed space');
+        //this.eventEmitterService.AddCardToHand(10);
+        this.draw();
       }
         
       else if (event.key=="q") {
@@ -236,12 +324,25 @@ export class GameComponent implements OnInit {
     this.gameService.shiftMap(dir);
     this.loadRoom(this.gameService.player_x, this.gameService.player_y);
     console.log(`go ${dir} x=${this.gameService.player_x} y=${this.gameService.player_y} new img_id=${this.currentRoom.img_id}`);
+    this.player_walk = this.gameService.player_walk; // update player_walk from gameService
+    this.player_meet = this.gameService.player_meet; 
+    
+    this.showPersuadeBox = this.doingEvent ? true : false;
+    this.showPersuadeButton = this.showPersuadeBox;
   }
 
   toggleDisplayMap() {
     this.displayMap = !this.displayMap;
     this.displayMapText = this.displayMap ? "HIDE MAP" : "SHOW MAP";
   }
+
+  clickPersuade() {
+    console.log('clicked persuade');
+    this.gameService.persuade();
+    this.player_score = this.gameService.player_score;
+    this.showPersuadeButton = false;
+  }
+
 
 
 }
